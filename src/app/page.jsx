@@ -10,7 +10,6 @@ import PhotoGallery from "./components/PhotoGallery"
 import Letter from "./components/Letter"
 import { motion } from "motion/react"
 
-export default function BirthdayApp() {
   const [currentScreen, setCurrentScreen] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const audioRef = useRef(null)
@@ -26,37 +25,18 @@ export default function BirthdayApp() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Try to play music on load, fallback to user gesture if blocked
-  useEffect(() => {
-    if (!isLoading && audioRef.current && !musicStarted) {
-      const playMusic = () => {
-        audioRef.current.play().then(() => {
-          setMusicStarted(true)
-        }).catch(() => {
-          // Autoplay blocked, wait for user gesture
-        })
-      }
-      playMusic()
-      // Add user gesture fallback
-      const resumeMusic = () => {
-        if (audioRef.current && !musicStarted) {
-          audioRef.current.play()
-          setMusicStarted(true)
-        }
-      }
-      window.addEventListener('click', resumeMusic, { once: true })
-      window.addEventListener('touchstart', resumeMusic, { once: true })
-      return () => {
-        window.removeEventListener('click', resumeMusic)
-        window.removeEventListener('touchstart', resumeMusic)
-      }
+  // Function to play music on user gesture
+  const playMusic = () => {
+    if (audioRef.current && !musicStarted) {
+      audioRef.current.play()
+      setMusicStarted(true)
     }
-  }, [isLoading, musicStarted])
+  }
 
   const screens = [
     !isBirthdayOver
       ? <Countdown key="countdown" onComplete={() => setisBirthdayOver(true)} birthdayDate={birthdayDate} />
-      : <Celebration key="celebration" onNext={() => setCurrentScreen(1)} />, 
+      : <Celebration key="celebration" onNext={() => { playMusic(); setCurrentScreen(1); }} />, 
     <HappyBirthday key="happy" onNext={() => setCurrentScreen(2)} />, 
     <PhotoGallery key="gallery" onNext={() => setCurrentScreen(3)} />, 
     <Letter key="letter" />, 
