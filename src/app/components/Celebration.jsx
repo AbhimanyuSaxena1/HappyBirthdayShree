@@ -5,7 +5,8 @@ import { Gift, Sparkles, Heart } from "lucide-react"
 import confetti from "canvas-confetti"
 import { useEffect } from "react"
 
-export default function Celebration({ onNext }) {
+// Accept audioRef as a prop
+export default function Celebration({ onNext, audioRef }) {
     const colors = ["#ff69b4", "#ff1493", "#9370db"]
     useEffect(() => {
         const duration = 2500
@@ -32,6 +33,13 @@ export default function Celebration({ onNext }) {
         frame()
     }, [])
 
+    // Handler for the button click
+    const handleCelebrate = () => {
+        if (audioRef && audioRef.current) {
+            audioRef.current.play()
+        }
+        onNext()
+    }
     return (
         <motion.div
             className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden"
@@ -99,7 +107,7 @@ export default function Celebration({ onNext }) {
                 }}
             >
                 <button
-                    onClick={onNext}
+                    onClick={handleCelebrate}
                     className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:via-purple-600 hover:to-indigo-600 text-white text-lg px-8 py-4 rounded-full shadow-xl border-2 border-white/70 transition-all duration-300 hover:scale-[103%]"
                 >
                     <motion.div className="flex items-center space-x-2" whileTap={{ scale: 0.95 }}>

@@ -10,6 +10,7 @@ import PhotoGallery from "./components/PhotoGallery"
 import Letter from "./components/Letter"
 import { motion } from "motion/react"
 
+export default function BirthdayApp() {
   const [currentScreen, setCurrentScreen] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const audioRef = useRef(null)
@@ -26,17 +27,10 @@ import { motion } from "motion/react"
   }, [])
 
   // Function to play music on user gesture
-  const playMusic = () => {
-    if (audioRef.current && !musicStarted) {
-      audioRef.current.play()
-      setMusicStarted(true)
-    }
-  }
-
   const screens = [
     !isBirthdayOver
       ? <Countdown key="countdown" onComplete={() => setisBirthdayOver(true)} birthdayDate={birthdayDate} />
-      : <Celebration key="celebration" onNext={() => { playMusic(); setCurrentScreen(1); }} />, 
+      : <Celebration key="celebration" onNext={() => setCurrentScreen(1)} audioRef={audioRef} />, 
     <HappyBirthday key="happy" onNext={() => setCurrentScreen(2)} />, 
     <PhotoGallery key="gallery" onNext={() => setCurrentScreen(3)} />, 
     <Letter key="letter" />, 
