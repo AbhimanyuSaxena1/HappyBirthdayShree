@@ -9,13 +9,16 @@ import 'swiper/css/effect-cube'
 import 'swiper/css/pagination'
 
 export default function PhotoGallery({ onNext }) {
-
-    const photos = [
-        { id: 1, src: "/images/1.jpg" },
-        { id: 2, src: "/images/2.jpg" },
-        { id: 3, src: "/images/3.jpg" },
-        { id: 4, src: "/images/4.jpg" },
-    ]
+    const galleryItems = [
+        { id: 'img-1', type: 'image', src: "/images/1.jpg" },
+        { id: 'img-2', type: 'image', src: "/images/2.jpg" },
+        { id: 'img-3', type: 'image', src: "/images/3.jpg" },
+        { id: 'img-4', type: 'image', src: "/images/4.jpg" },
+        { id: 'vid-1', type: 'video', src: "/videos/1.mp4" },
+        { id: 'vid-2', type: 'video', src: "/videos/2.mp4" },
+        { id: 'vid-3', type: 'video', src: "/videos/3.mp4" },
+        { id: 'vid-4', type: 'video', src: "/videos/4.mp4" },
+    ];
 
     return (
         <motion.div
@@ -63,13 +66,26 @@ export default function PhotoGallery({ onNext }) {
                     modules={[EffectCube, Pagination]}
                     className="mySwiper h-[350px] md:h-[450px]" // adjust height as needed
                 >
-                    {photos.map((photo, index) => (
-                        <SwiperSlide key={photo.id}>
-                            <img
-                                src={photo.src}
-                                alt={`Memory ${index + 1}`}
-                                className="w-full h-full object-cover rounded-xl"
-                            />
+                    {galleryItems.map((item, index) => (
+                        <SwiperSlide key={item.id}>
+                            {item.type === 'image' ? (
+                                <img
+                                    src={item.src}
+                                    alt={`Memory ${index + 1}`}
+                                    className="w-full h-full object-cover rounded-xl"
+                                />
+                            ) : (
+                                <video
+                                    src={item.src}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    controls={false}
+                                    preload="metadata"
+                                    alt={`Memory ${index + 1}`}
+                                    className="w-full h-full object-cover rounded-xl bg-black"
+                                />
+                            )}
                         </SwiperSlide>
                     ))}
                 </Swiper>
@@ -94,3 +110,4 @@ export default function PhotoGallery({ onNext }) {
         </motion.div>
     )
 }
+// ...existing code...
