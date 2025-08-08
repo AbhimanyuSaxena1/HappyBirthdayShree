@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { AnimatePresence } from "motion/react"
 import Loader from "./components/Loader"
 import Countdown from "./components/Countdown"
@@ -13,6 +13,8 @@ import { motion } from "motion/react"
 export default function BirthdayApp() {
   const [currentScreen, setCurrentScreen] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const audioRef = useRef(null)
+  const [musicStarted, setMusicStarted] = useState(false)
 
   const birthdayDate = new Date("2025-07-16T00:00:00")
   const [isBirthdayOver, setisBirthdayOver] = useState(new Date().getTime() >= birthdayDate.getTime())
@@ -24,17 +26,46 @@ export default function BirthdayApp() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Try to play music on load, fallback to user gesture if blocked
+  useEffect(() => {
+    if (!isLoading && audioRef.current && !musicStarted) {
+      const playMusic = () => {
+        audioRef.current.play().then(() => {
+          setMusicStarted(true)
+        }).catch(() => {
+          // Autoplay blocked, wait for user gesture
+        })
+      }
+      playMusic()
+      // Add user gesture fallback
+      const resumeMusic = () => {
+        if (audioRef.current && !musicStarted) {
+          audioRef.current.play()
+          setMusicStarted(true)
+        }
+      }
+      window.addEventListener('click', resumeMusic, { once: true })
+      window.addEventListener('touchstart', resumeMusic, { once: true })
+      return () => {
+        window.removeEventListener('click', resumeMusic)
+        window.removeEventListener('touchstart', resumeMusic)
+      }
+    }
+  }, [isLoading, musicStarted])
+
   const screens = [
     !isBirthdayOver
       ? <Countdown key="countdown" onComplete={() => setisBirthdayOver(true)} birthdayDate={birthdayDate} />
-      : <Celebration key="celebration" onNext={() => setCurrentScreen(1)} onMusicStart={() => setMusicStarted(true)} />,
-    <HappyBirthday key="happy" onNext={() => setCurrentScreen(2)} />,
-    <PhotoGallery key="gallery" onNext={() => setCurrentScreen(3)} />,
-    <Letter key="letter" />,
+      : <Celebration key="celebration" onNext={() => setCurrentScreen(1)} />, 
+    <HappyBirthday key="happy" onNext={() => setCurrentScreen(2)} />, 
+    <PhotoGallery key="gallery" onNext={() => setCurrentScreen(3)} />, 
+    <Letter key="letter" />, 
   ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950/30 via-black to-purple-950/30 overflow-hidden relative">
+      {/* Music player (hidden) */}
+      <audio ref={audioRef} src="/Tum%20Ho%20Toh_320(PagaiWorld.com)-[AudioTrimmer.com].mp3" preload="auto" loop />
 
       {/* Radial gradients for background */}
       <div className="fixed inset-0 z-0 blur-[120px] opacity-20" style={{
