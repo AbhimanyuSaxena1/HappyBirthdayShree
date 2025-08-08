@@ -11,7 +11,7 @@ export default function Letter() {
     const [currentText, setCurrentText] = useState("")
     const [showCursor, setShowCursor] = useState(true)
 
-    const letterText = `My Dearest Madam Jii,
+    const letterText = `My Dearest Madam jii💕,
 
 On this very special day, I want you to know how incredibly grateful I am to have you in my life. Your birthday isn't just a celebration of another year - it's a celebration of all the joy, laughter, and beautiful memories you bring to this world.
 
@@ -19,7 +19,7 @@ You have this amazing ability to light up any room you enter, to make people smi
 
 Thank you for being the wonderful, amazing, absolutely fantastic person that you are. The world is so much brighter because you're in it.
 
-Happy Birthday, beautiful soul! 🎂✨
+Happy Birthday, beautiful! 🎂✨
 
 With all my love and warmest wishes,
 Forever Yours 💕`
